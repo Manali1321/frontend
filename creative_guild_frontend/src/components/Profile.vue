@@ -1,25 +1,32 @@
 <template>
-  <div>
-    <h1>User Profile</h1>
-    <button>logout</button>
-    <div v-if="user">
-      <h2>{{ user.name }}</h2>
-      <p>Email: {{ user.email }}</p>
-      <p>Phone: {{ user.phone }}</p>
-      <p>Bio: {{ user.bio }}</p>
-      <img :src="user.profile_picture" alt="Profile Picture" />
+  <div class="profile-container">
+    <div class="profile" v-if="user">
+      <div class="profile-info">
+        <div class="profile-picture">
+          <img :src="user.profile_picture" alt="Profile Picture" />
+        </div>
+        <div class="profile-details">
+          <h2>{{ user.name }}</h2>
+          <p>{{ user.email }}</p>
+          <p>{{ user.phone }}</p>
+          <p>{{ user.bio }}</p>
+        </div>
+      </div>
     </div>
     <div v-else>
       <p>Loading user profile...</p>
     </div>
-
     <h1>User Albums</h1>
-    <div v-if="albums.length">
-      <div v-for="album in albums" :key="album.id">
-        <h2>{{ album.title }}</h2>
-        <p>Description: {{ album.description }}</p>
-        <img :src="album.img" alt="Album Image" />
-        <p>Date: {{ album.date }}</p>
+    <div class="albums" v-if="albums.length">
+      <div class="album" v-for="album in albums" :key="album.id">
+        <div class="album-image">
+          <img :src="album.img" alt="Album Image" />
+        </div>
+        <div class="album-details">
+          <h2>{{ album.title }}</h2>
+          <p>{{ album.description }}</p>
+          <p>{{ album.date }}</p>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -68,3 +75,66 @@ onMounted(() => {
     })
 })
 </script>
+
+<style scoped>
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.profile-details h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.profile-details p {
+  margin-bottom: 5px;
+}
+
+.albums {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.album {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.album img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.album-details h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.album-details p {
+  margin-bottom: 5px;
+}
+</style>
