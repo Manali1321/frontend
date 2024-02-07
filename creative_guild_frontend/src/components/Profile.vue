@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>User Profile</h1>
+    <button>logout</button>
     <div v-if="user">
       <h2>{{ user.name }}</h2>
       <p>Email: {{ user.email }}</p>
@@ -56,7 +57,7 @@ const route = useRoute()
 const userId = Number(route.params.id)
 
 onMounted(() => {
-  fetch(`http://localhost:8888/user/${userId}`)
+  fetch(`http://localhost:8888/api/user/${userId}`)
     .then((response) => response.json())
     .then((data) => {
       user.value = data.user

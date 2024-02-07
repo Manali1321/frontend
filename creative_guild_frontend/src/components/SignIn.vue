@@ -72,7 +72,7 @@ const router = useRouter()
 
 const handleSubmit = async () => {
   try {
-    const response = await fetch('http://localhost:8888/login', {
+    const response = await fetch('http://localhost:8888/api/login', {
       method: 'POST',
       body: JSON.stringify(formData.value),
       headers: {
@@ -81,46 +81,27 @@ const handleSubmit = async () => {
     })
 
     if (!response.ok) {
-      throw new Error('Invalid credentials') // Handle non-ok responses
+      console.log(response)
+      throw new Error('Invalid credentials')
     }
 
     const data = await response.json()
-    console.log(data.user.id) // Log response data
-
-    // Redirect to profile page or handle successful login
+    console.log(data.user)
+    console.log('stored token:', JSON.stringify(data.token))
+    console.log(data)
+    const token = JSON.stringify(data.token)
+    localStorage.setItem('token', token)
     router.push(`/profile/${data.user.id}`)
   } catch (error) {
     console.error('Error logging in:', error)
-    // Set error message state to display to the user
     message.value = 'error'
   }
 }
-
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 </script>
 
-<!-- <script setup lang="ts">
-import { ref } from 'vue'
-
-const formData = ref({
-  email: '',
-  password: ''
-})
-const showPassword = ref(false)
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value
-  console.log(showPassword.value)
-  console.log(formData.value.password)
-}
-const handleSubmit = () => {
-  console.log('Email:', formData.value.email)
-  console.log('Password:', formData.value.password)
-}
-
-</script> -->
 <style>
 .form-field-wrapper {
   padding: 15px 0px;

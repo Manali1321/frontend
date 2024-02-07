@@ -174,13 +174,10 @@ const handleSubmit = async () => {
 
   try {
     // Make the POST request
-    const response = await fetch('http://localhost:8888/signup', {
+    const response = await fetch('http://localhost:8888/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-        // ,
-        // 'X-CSRF-TOKEN':
-        //   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
       },
       body: JSON.stringify(payload)
     })
