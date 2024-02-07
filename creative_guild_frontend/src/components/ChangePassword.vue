@@ -3,6 +3,7 @@
     <img src="../../cg-logo.png" alt="Logo" class="logo" />
     <h1 class="primary-font">Change Password</h1>
     <h2 class="secondary-font">Use the Reset code send to your inbox</h2>
+    <div v-if="message" class="error-message">{{ message }}</div>
     <div class="form-container">
       <form @submit.prevent="handleSubmit" class="login-form">
         <div class="form-field-wrapper">
@@ -81,8 +82,11 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
+const message = ref('')
+const router = useRouter()
 const formData = ref({
   code: '',
   password: '',
@@ -91,20 +95,39 @@ const formData = ref({
 const showPassword = ref(false)
 const cShowPassword = ref(false)
 
-const handleSubmit = () => {
-  // console.log('Code:', formData.value.code)
-  // console.log('Password:', formData.value.password)
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://localhost:8888/api/change_password', {
+      method: 'POST',
+      body: JSON.stringify(formData.value),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Invalid reset token')
+    }
+
+    const data = await response.json()
+    console.log(data.token)
+    console.log('reset token:', JSON.stringify(data.token))
+    console.log(data)
+    // const token = JSON.stringify(data.token)
+    // localStorage.setItem('token', token)
+    router.push('/')
+  } catch (error) {
+    console.error('Error in change password:', error)
+    message.value = 'error'
+  }
 }
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
-  // console.log(showPassword.value)
-  // console.log(formData.value.password)
 }
 
 const toggleCpasswordVisibility = () => {
   cShowPassword.value = !cShowPassword.value
-  // console.log(showPassword.value)
-  // console.log(formData.value.password)
 }
 </script>

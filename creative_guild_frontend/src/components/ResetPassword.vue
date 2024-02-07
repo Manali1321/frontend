@@ -6,6 +6,8 @@
       Have an Account?
       <router-link class="cg-link" to="/">Login</router-link>
     </h2>
+    <div v-if="message" class="error-message">{{ message }}</div>
+
     <div class="form-container">
       <form @submit.prevent="handleSubmit" class="login-form">
         <div class="form-field-wrapper">
@@ -31,14 +33,37 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
+const message = ref('')
 const router = useRouter()
-
 const formData = ref({
-  email: '',
+  email: ''
 })
 
-const handleSubmit = () => {
-  router.push('/change_password')
-}
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://localhost:8888/api/reset_password', {
+      method: 'POST',
+      body: JSON.stringify(formData.value),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
 
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Invalid email')
+    }
+
+    const data = await response.json()
+    console.log(data.token)
+    console.log('reset token:', JSON.stringify(data.token))
+    console.log(data)
+    // const token = JSON.stringify(data.token)
+    // localStorage.setItem('token', token)
+    router.push('/change_password')
+  } catch (error) {
+    console.error('Error logging in:', error)
+    message.value = 'error'
+  }
+}
 </script>
