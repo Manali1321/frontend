@@ -48,19 +48,68 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+interface Album {
+  id: number
+  title: string
+  description: string
+  img: string
+  date: string
+  featured: boolean
+}
+
+interface User {
+  id: number
+  name: string
+  email: string
+  phone: string
+  bio: string
+  profile_picture: string
+  albums: Album[]
+}
+
+const user = ref<User | null>(null)
+const albums = ref<Album[]>([])
+const route = useRoute()
+
+const userId = Number(route.params.id)
+
+onMounted(() => {
+  fetch(`http://localhost:8888/api/user/${userId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user profile')
+      }
+      return response.json()
+    })
+    .then((data) => {
+      user.value = data.user
+      albums.value = data.user.albums
+    })
+    .catch((error) => {
+      console.error('Error fetching user profile:', error)
+      // Provide user feedback about the error, e.g., display a message
+    })
+})
+</script>
+
 <style scoped>
 .profile-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 70%; /* Adjust the width as needed */
-
 }
+
 .album-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
 .profile {
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -96,13 +145,16 @@
 .profile-details .bio {
   display: flex;
 }
+
 .highlight-font{
   color: rgb(244, 63, 93);
 }
+
 .profile-details-title{
   font-size: 14px;
   font-weight: 300;
 }
+
 .profile-details p {
   margin-bottom: 5px;
 }
@@ -156,46 +208,3 @@
   font-size: 0.8rem;
 }
 </style>
-
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-
-interface Album {
-  id: number
-  title: string
-  description: string
-  img: string
-  date: string
-  featured: boolean
-}
-
-interface User {
-  id: number
-  name: string
-  email: string
-  phone: string
-  bio: string
-  profile_picture: string
-  albums: Album[]
-}
-
-const user = ref<User | null>(null)
-const albums = ref<Album[]>([])
-const route = useRoute()
-
-const userId = Number(route.params.id)
-
-onMounted(() => {
-  fetch(`http://localhost:8888/api/user/${userId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      user.value = data.user
-      albums.value = data.user.albums
-    })
-    .catch((error) => {
-      console.error('Error fetching user profile:', error)
-    })
-})
-</script>
